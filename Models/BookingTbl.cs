@@ -10,6 +10,7 @@ namespace demo.Models
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
         public int? UserId { get; set; }
+        [Range(1, 5,ErrorMessage = "Sorry,You can book maximum 5 tickets at a time.")]
         public int NoOfTickets { get; set; }
         public string SeatNo { get; set; }
         public int AmountTotal { get; set; }

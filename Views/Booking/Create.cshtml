@@ -6,9 +6,9 @@
     Layout = "UserLayout";
 
 }
-<head>
+@*<head>
     <link rel="stylesheet" href="~/css/StyleSheet.css">
-</head>
+</head>*@
 
 <h1>Create</h1>
 
@@ -51,6 +51,19 @@
                 <label asp-for="SeatNo" class="control-label"></label>
                 <input asp-for="SeatNo" class="form-control" />
                 <span asp-validation-for="SeatNo" class="text-danger"></span>
+                @if (ViewBag.ValidationMesssage != null)
+                {
+                <div class="text-danger">
+                        @ViewBag.ValidationMesssage
+                </div>
+                }
+                @if(ViewBag.SeatErrorMessage!=null)
+                {
+                    <div class="text-danger">
+                        @ViewBag.SeatErrorMessage
+                    </div>
+
+                }
             </div>
             <img src="/Image/MicrosoftTeams-image (1).png" alt="Image" height="250" width="250" />
             @*<div class="form-group">

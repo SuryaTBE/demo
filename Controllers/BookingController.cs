@@ -15,10 +15,43 @@ namespace demo.Controllers
         {
             _context = context;
         }
+        public bool SeatVal(string seatno,int n)
+        {
+            bool a=true;
+            string[] seatArr = seatno.Split(",",StringSplitOptions.RemoveEmptyEntries);
+            if(seatArr.Length == n)
+            {
+                return true;
+                
+            }
+            else
+                return false;
+            
+        }
+        public bool SeatnoVal(string s)
+        {
+            bool a = true;
+            string[] snoArr = s.Split(",",StringSplitOptions.RemoveEmptyEntries);
+            for(int i = 0; i < snoArr.Length; i++)
+            {
+                if (Convert.ToInt32(snoArr[i]) > 0 && Convert.ToInt32(snoArr[i])<=50)
+                {
+                    a= true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+           
+
+            return a;
+        }
+
         public int SeatCheck(string a, DateTime d, int id)
         {
             List<BookingTbl> Book = _context.BookingTbl.ToList();
-            string[] SeatList = a.Split(",");
+            string[] SeatList = a.Split(",", StringSplitOptions.RemoveEmptyEntries);
             for(int b=0;b<SeatList.Length; b++)
             {
                 //if ((Convert.ToInt32(SeatList[b]) > 50) && (Convert.ToInt32(SeatList[b]) <= 0))
@@ -106,24 +139,47 @@ namespace demo.Controllers
                 int cost = (int)HttpContext.Session.GetInt32("Cost");
                 bookingTbl.AmountTotal = bookingTbl.NoOfTickets * cost;
                 bookingTbl.Date=Convert.ToDateTime(HttpContext.Session.GetString("Date"));
+            string Seat = bookingTbl.SeatNo;
+            string[] seats = Seat.Split(",", StringSplitOptions.RemoveEmptyEntries);
+            string SeatNo = string.Join(",", seats);
+
             //This one is for search area
             //if ((bookingTbl.Date >= DateTime.Now) && (bookingTbl.Date <= DateTime.Today.AddDays(5)))
             //{
-            int i = SeatCheck(bookingTbl.SeatNo, bookingTbl.Date, bookingTbl.MovieId);
-            if (i == 1)
+            if (SeatVal(SeatNo, bookingTbl.NoOfTickets))   
             {
-                _context.Add(bookingTbl);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (SeatnoVal(bookingTbl.SeatNo))
+                {
+                    int i = SeatCheck(bookingTbl.SeatNo, bookingTbl.Date, bookingTbl.MovieId);
+                    if (i == 1)
+                    {
+                        bookingTbl.SeatNo = SeatNo;
+                        _context.Add(bookingTbl);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        //ViewBag.ErrorMessage = bookingTbl.SeatNo;
+                        //HttpContext.Session.SetString("Already Booked",bookingTbl.SeatNo);
+                        ViewBag.ErrorMessage = "Already Booked.";
+                        //return RedirectToAction("create");
+                        return View();
+                    }
+                }
+                else
+                {
+                    ViewBag.SeatErrorMessage = "Please Enter the Valid SeatNo";
+                    return View();
+                    
+                }
             }
             else
             {
-                //ViewBag.ErrorMessage = bookingTbl.SeatNo;
-                //HttpContext.Session.SetString("Already Booked",bookingTbl.SeatNo);
-                ViewBag.ErrorMessage = "Already Booked.";
-                //return RedirectToAction("create");
+                ViewBag.ValidationMesssage = "Selected seats and No of seats mismatching....\n";
                 return View();
             }
+            
             //}
 
             //else
