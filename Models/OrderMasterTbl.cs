@@ -7,8 +7,9 @@ namespace demo.Models
     {
         [Key]
         public int OrderMasterId { get; set; }
-        [DataType(DataType.Date)]
         public int? UserId { get; set; }
+        [DataType(DataType.Date)]
+        
         public DateTime OrderDate { get; set; }
         public int CardNo { get; set; }
         public int Amount { get; set; }

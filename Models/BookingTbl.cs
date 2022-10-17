@@ -6,7 +6,9 @@ namespace demo.Models
     {
         [Key]
         public int BookingId { get; set; }
+        
         public int MovieId { get; set; }
+        public string MovieName { get; set; }
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
         public int? UserId { get; set; }

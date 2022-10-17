@@ -22,7 +22,7 @@ namespace demo.Controllers
         [HttpPost]
         public IActionResult Login(AdminTbl obj)
         {
-            var result = (from i in db.adminTbls
+            var result = (from i in db.AdminTbls
                           where i.Email == obj.Email && i.Password == obj.Password
                           select i).SingleOrDefault();
             if (result != null)

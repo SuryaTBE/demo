@@ -21,7 +21,7 @@ namespace demo.Controllers
         [HttpPost]
         public IActionResult Login(UserTbl obj)
         {
-            var result = (from i in db.userTbls
+            var result = (from i in db.UserTbls
                           where i.Email == obj.Email && i.Password == obj.Password
                           select i).SingleOrDefault();
             if (result != null)
@@ -40,7 +40,7 @@ namespace demo.Controllers
         [HttpPost]
         public IActionResult Register(UserTbl obj)
         {
-            db.userTbls.Add(obj);
+            db.UserTbls.Add(obj);
             db.SaveChanges();
             return RedirectToAction("Login");
         }

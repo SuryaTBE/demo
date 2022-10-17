@@ -15,7 +15,7 @@ namespace demo.Controllers
         {
             _context = context;
         }
-        public bool SeatVal(string seatno,int n)
+        public bool SeatVal(string seatno,int n)//For No of tickets and Seat selection validation
         {
             bool a=true;
             string[] seatArr = seatno.Split(",",StringSplitOptions.RemoveEmptyEntries);
@@ -28,7 +28,7 @@ namespace demo.Controllers
                 return false;
             
         }
-        public bool SeatnoVal(string s)
+        public bool SeatnoVal(string s) //Seat no validation 
         {
             bool a = true;
             string[] snoArr = s.Split(",",StringSplitOptions.RemoveEmptyEntries);
@@ -48,9 +48,10 @@ namespace demo.Controllers
             return a;
         }
 
-        public int SeatCheck(string a, DateTime d, int id)
+        public int SeatCheck(string a, DateTime d, int id)//Seat availability
         {
             List<BookingTbl> Book = _context.BookingTbl.ToList();
+            List<OrderDetails> detail=_context.OrderDetails.ToList();
             string[] SeatList = a.Split(",", StringSplitOptions.RemoveEmptyEntries);
             for(int b=0;b<SeatList.Length; b++)
             {
@@ -59,10 +60,11 @@ namespace demo.Controllers
 
                 //}
                 
-                    foreach (var i in Book)
+
+                foreach (var i in Book)
                     {
-                        string[] Seatnos = i.SeatNo.Split(",");
-                        for (int j = 0; j < Seatnos.Length; j++)
+                    string[] Seatnos = i.SeatNo.Split(",");
+                    for (int j = 0; j < Seatnos.Length; j++)
                         {
                             if ((i.Date == d) && (i.MovieId == id) && (Seatnos[j] == SeatList[b]))
                             {
@@ -70,7 +72,17 @@ namespace demo.Controllers
                             }
                         }
                     }
-                
+                foreach (var od in detail)
+                {
+                    string[] Seatnos = od.SeatNo.Split(",", StringSplitOptions.RemoveEmptyEntries);
+                    for (int j = 0; j < Seatnos.Length; j++)
+                    {
+                        if ((od.MovieDate == d) && (od.MovieId == id) && (Seatnos[j] == SeatList[b]))
+                        {
+                            return 0;
+                        }
+                    }
+                }
             }
             return 1;
         }
@@ -131,6 +143,7 @@ namespace demo.Controllers
            
                 bookingTbl.MovieId = (int)HttpContext.Session.GetInt32("MovieId");
                 bookingTbl.UserId = (int)HttpContext.Session.GetInt32("UserId");
+                bookingTbl.MovieName = HttpContext.Session.GetString("MovieName");
             //var id = (from i in _context.BookingTbl
             //          where i.UserId == bookingTbl.UserId && i.MovieId == bookingTbl.MovieId && i.Date == bookingTbl.Date
             //          select i).SingleOrDefault();
@@ -216,8 +229,8 @@ namespace demo.Controllers
             {
                 return NotFound();
             }
-            ViewData["MovieId"] = new SelectList(_context.movieTbls, "MovieId", "MovieId", bookingTbl.MovieId);
-            ViewData["UserId"] = new SelectList(_context.userTbls, "UserId", "UserId", bookingTbl.UserId);
+            ViewData["MovieId"] = new SelectList(_context.MovieTbls, "MovieId", "MovieId", bookingTbl.MovieId);
+            ViewData["UserId"] = new SelectList(_context.UserTbls, "UserId", "UserId", bookingTbl.UserId);
             return View(bookingTbl);
         }
 
@@ -253,8 +266,8 @@ namespace demo.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MovieId"] = new SelectList(_context.movieTbls, "MovieId", "MovieId", bookingTbl.MovieId);
-            ViewData["UserId"] = new SelectList(_context.userTbls, "UserId", "UserId", bookingTbl.UserId);
+            ViewData["MovieId"] = new SelectList(_context.MovieTbls, "MovieId", "MovieId", bookingTbl.MovieId);
+            ViewData["UserId"] = new SelectList(_context.UserTbls, "UserId", "UserId", bookingTbl.UserId);
             return View(bookingTbl);
         }
 
@@ -345,6 +358,10 @@ public IActionResult Payment(int id)
                     OrderDetails detail = new OrderDetails();
                     detail.MovieId = item.MovieId;
                     detail.NoOfTickets = item.NoOfTickets;
+                detail.MovieName = item.MovieName;
+                    detail.UserId = (int)HttpContext.Session.GetInt32("UserId");
+                    detail.MovieDate = Convert.ToDateTime(HttpContext.Session.GetString("Date"));
+                    detail.SeatNo = item.SeatNo;
                     detail.Cost = item.AmountTotal;
                     detail.OrderMasterId = om.OrderMasterId;
                     od.Add(detail);

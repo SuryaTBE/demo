@@ -1,53 +1,146 @@
 ﻿@model IEnumerable<demo.Models.OrderDetails>
+@inject IHttpContextAccessor HttpContextAccesor
 
 @{
     ViewData["Title"] = "Index";
+    ViewBag.UserId= @HttpContextAccesor.HttpContext.Session.GetInt32("UserId");
+    if(ViewBag.UserId!=null)
+    {
+       Layout="ODLayout";
+    }
+    else
+    {
+        Layout="ODALayout";
+    }
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<h1>Order History</h1>
 <table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.MovieId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OrderMasterId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NoOfTickets)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cost)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.MovieId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OrderMasterId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NoOfTickets)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cost)
-            </td>
-            <td>
-                @*<a asp-action="Edit" asp-route-id="@item.OrderDetailId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.OrderDetailId">Details</a>*@ |
-                <a asp-action="Delete" asp-route-id="@item.OrderDetailId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
+    @if (ViewBag.UserId != null)
+    {
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.MovieId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MovieName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MovieDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UserId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NoOfTickets)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SeatNo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cost)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                if (item.UserId == ViewBag.UserId)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MovieId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MovieName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MovieDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UserId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NoOfTickets)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SeatNo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Cost)
+                        </td>
+                    </tr>
+                }
+            }
+
+        </tbody>
+    }
+    else
+    {
+        <thead>
+            <tr>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.OrderMasterId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MovieId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MovieName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MovieDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UserId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NoOfTickets)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SeatNo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cost)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.OrderMasterId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MovieId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MovieName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MovieDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UserId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NoOfTickets)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SeatNo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Cost)
+                        </td>
+                    </tr>
+                
+            }
+
+        </tbody>
+    }
 </table>

@@ -21,16 +21,16 @@ namespace demo.Controllers
         // GET: Movie
         public async Task<IActionResult> Index()
         {
-              return View(await _context.movieTbls.ToListAsync());
+              return View(await _context.MovieTbls.ToListAsync());
         }
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.movieTbls == null)
+            if (id == null || _context.MovieTbls == null)
             {
                 return NotFound();
             }
 
-            var movieTbl = await _context.movieTbls
+            var movieTbl = await _context.MovieTbls
                 .FirstOrDefaultAsync(m => m.MovieId == id);
             ////HttpContext.Session.SetString("Moviename",movieTbl.MovieName);
             //HttpContext.Session.SetInt32("MovieId", movieTbl.MovieId);
@@ -48,15 +48,16 @@ namespace demo.Controllers
         // GET: Movie/Details/5
         public async Task<IActionResult> BookNow(int? id)
         {
-            if (id == null || _context.movieTbls == null)
+            if (id == null || _context.MovieTbls == null)
             {
                 return NotFound();
             }
 
-            var movieTbl = await _context.movieTbls
+            var movieTbl = await _context.MovieTbls
                 .FirstOrDefaultAsync(m => m.MovieId == id);
             //HttpContext.Session.SetString("Moviename",movieTbl.MovieName);
             HttpContext.Session.SetInt32("MovieId", movieTbl.MovieId);
+            HttpContext.Session.SetString("MovieName", movieTbl.MovieName);
             HttpContext.Session.SetInt32("Cost",movieTbl.Cost);
             HttpContext.Session.SetString("Date", movieTbl.Date.ToString());
             if (movieTbl == null)
@@ -94,12 +95,12 @@ namespace demo.Controllers
         // GET: Movie/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.movieTbls == null)
+            if (id == null || _context.MovieTbls == null)
             {
                 return NotFound();
             }
 
-            var movieTbl = await _context.movieTbls.FindAsync(id);
+            var movieTbl = await _context.MovieTbls.FindAsync(id);
             if (movieTbl == null)
             {
                 return NotFound();
@@ -145,12 +146,12 @@ namespace demo.Controllers
         // GET: Movie/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.movieTbls == null)
+            if (id == null || _context.MovieTbls == null)
             {
                 return NotFound();
             }
 
-            var movieTbl = await _context.movieTbls
+            var movieTbl = await _context.MovieTbls
                 .FirstOrDefaultAsync(m => m.MovieId == id);
             if (movieTbl == null)
             {
@@ -165,14 +166,14 @@ namespace demo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.movieTbls == null)
+            if (_context.MovieTbls == null)
             {
                 return Problem("Entity set 'SampleContext.movieTbls'  is null.");
             }
-            var movieTbl = await _context.movieTbls.FindAsync(id);
+            var movieTbl = await _context.MovieTbls.FindAsync(id);
             if (movieTbl != null)
             {
-                _context.movieTbls.Remove(movieTbl);
+                _context.MovieTbls.Remove(movieTbl);
             }
             
             await _context.SaveChangesAsync();
@@ -181,7 +182,7 @@ namespace demo.Controllers
 
         private bool MovieTblExists(int id)
         {
-          return _context.movieTbls.Any(e => e.MovieId == id);
+          return _context.MovieTbls.Any(e => e.MovieId == id);
         }
     }
 }

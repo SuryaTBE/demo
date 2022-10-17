@@ -11,5 +11,6 @@ namespace demo.Models
         public string Password { get; set; }    
         public virtual ICollection<BookingTbl> BookingTbls { get; set; }
         public virtual ICollection<OrderMasterTbl> OrderMasterTbls { get; set; }
+        public virtual ICollection<OrderDetails> Details { get; set; }
     }
 }

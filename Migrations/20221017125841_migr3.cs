@@ -4,23 +4,23 @@
 
 namespace demo.Migrations
 {
-    public partial class migr4 : Migration
+    public partial class migr3 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "Cost",
-                table: "movieTbls",
-                type: "int",
+            migrationBuilder.AddColumn<string>(
+                name: "MovieName",
+                table: "BookingTbl",
+                type: "nvarchar(max)",
                 nullable: false,
-                defaultValue: 0);
+                defaultValue: "");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Cost",
-                table: "movieTbls");
+                name: "MovieName",
+                table: "BookingTbl");
         }
     }
 }

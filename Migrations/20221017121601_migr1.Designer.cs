@@ -12,14 +12,14 @@ using demo.Models;
 namespace demo.Migrations
 {
     [DbContext(typeof(SampleContext))]
-    [Migration("20221006121450_migr7")]
-    partial class migr7
+    [Migration("20221017121601_migr1")]
+    partial class migr1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.9")
+                .HasAnnotation("ProductVersion", "6.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -46,7 +46,7 @@ namespace demo.Migrations
 
                     b.HasKey("AdminId");
 
-                    b.ToTable("adminTbls");
+                    b.ToTable("AdminTbls");
                 });
 
             modelBuilder.Entity("demo.Models.BookingTbl", b =>
@@ -60,11 +60,18 @@ namespace demo.Migrations
                     b.Property<int>("AmountTotal")
                         .HasColumnType("int");
 
-                    b.Property<int?>("MovieId")
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MovieId")
                         .HasColumnType("int");
 
                     b.Property<int>("NoOfTickets")
                         .HasColumnType("int");
+
+                    b.Property<string>("SeatNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
@@ -89,29 +96,26 @@ namespace demo.Migrations
                     b.Property<int>("Cost")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("From")
+                    b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Image")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MovieName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Slot")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("To")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Slot")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("capacity")
                         .HasColumnType("int");
 
                     b.HasKey("MovieId");
 
-                    b.ToTable("movieTbls");
+                    b.ToTable("MovieTbls");
                 });
 
             modelBuilder.Entity("demo.Models.OrderDetails", b =>
@@ -122,23 +126,44 @@ namespace demo.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderDetailId"), 1L, 1);
 
-                    b.Property<int?>("BookingTblBookingId")
+                    b.Property<int>("Cost")
                         .HasColumnType("int");
 
-                    b.Property<int>("Cost")
+                    b.Property<DateTime>("MovieDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MovieId")
                         .HasColumnType("int");
 
                     b.Property<int>("NoOfTickets")
                         .HasColumnType("int");
 
+                    b.Property<int>("OrderMasterId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("OrderMasterTblOrderMasterId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SeatNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("bookingtblBookingId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("usertblUserId")
                         .HasColumnType("int");
 
                     b.HasKey("OrderDetailId");
 
-                    b.HasIndex("BookingTblBookingId");
-
                     b.HasIndex("OrderMasterTblOrderMasterId");
+
+                    b.HasIndex("bookingtblBookingId");
+
+                    b.HasIndex("usertblUserId");
 
                     b.ToTable("OrderDetails");
                 });
@@ -151,11 +176,17 @@ namespace demo.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderMasterId"), 1L, 1);
 
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
                     b.Property<int>("CardNo")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("Paid")
+                        .HasColumnType("int");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
@@ -165,23 +196,6 @@ namespace demo.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("OrderMasterTbls");
-                });
-
-            modelBuilder.Entity("demo.Models.TimeSlotTbl", b =>
-                {
-                    b.Property<int>("SlotId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SlotId"), 1L, 1);
-
-                    b.Property<string>("TimeSlot")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("SlotId");
-
-                    b.ToTable("TimeSlotTbls");
                 });
 
             modelBuilder.Entity("demo.Models.UserTbl", b =>
@@ -206,14 +220,16 @@ namespace demo.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("userTbls");
+                    b.ToTable("UserTbls");
                 });
 
             modelBuilder.Entity("demo.Models.BookingTbl", b =>
                 {
                     b.HasOne("demo.Models.MovieTbl", "Movie")
                         .WithMany("Bookings")
-                        .HasForeignKey("MovieId");
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("demo.Models.UserTbl", "User")
                         .WithMany("BookingTbls")
@@ -226,17 +242,23 @@ namespace demo.Migrations
 
             modelBuilder.Entity("demo.Models.OrderDetails", b =>
                 {
-                    b.HasOne("demo.Models.BookingTbl", "BookingTbl")
-                        .WithMany("OrderDetails")
-                        .HasForeignKey("BookingTblBookingId");
-
                     b.HasOne("demo.Models.OrderMasterTbl", "OrderMasterTbl")
                         .WithMany("Details")
                         .HasForeignKey("OrderMasterTblOrderMasterId");
 
-                    b.Navigation("BookingTbl");
+                    b.HasOne("demo.Models.BookingTbl", "bookingtbl")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("bookingtblBookingId");
+
+                    b.HasOne("demo.Models.UserTbl", "usertbl")
+                        .WithMany("Details")
+                        .HasForeignKey("usertblUserId");
 
                     b.Navigation("OrderMasterTbl");
+
+                    b.Navigation("bookingtbl");
+
+                    b.Navigation("usertbl");
                 });
 
             modelBuilder.Entity("demo.Models.OrderMasterTbl", b =>
@@ -266,6 +288,8 @@ namespace demo.Migrations
             modelBuilder.Entity("demo.Models.UserTbl", b =>
                 {
                     b.Navigation("BookingTbls");
+
+                    b.Navigation("Details");
 
                     b.Navigation("OrderMasterTbls");
                 });
