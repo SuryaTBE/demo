@@ -1,13 +1,20 @@
 ﻿@model IEnumerable<demo.Models.BookingTbl>
+@inject IHttpContextAccessor HttpContextAccesor
 
 @{
     ViewData["Title"] = "Index";
     Layout = "UserLayout";
+    ViewBag.msg = @HttpContextAccesor.HttpContext.Session.GetString("msg");
 }
 
 <h1>Index</h1>
+  @if (ViewBag.msg != null)
+    {
+        <div class="text-danger">@ViewBag.msg</div>
+    }
 
 <table class="table">
+ 
     <thead>
         <tr>
             <th>
@@ -26,7 +33,7 @@
                 @Html.DisplayNameFor(model => model.AmountTotal)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User)
+                @Html.DisplayNameFor(model => model.UserId)
             </th>
             <th></th>
         </tr>

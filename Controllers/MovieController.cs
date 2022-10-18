@@ -184,5 +184,124 @@ namespace demo.Controllers
         {
           return _context.MovieTbls.Any(e => e.MovieId == id);
         }
+        public async Task<IActionResult> DateSearch(string Search, int? PageNumber, string CurrentFilter)
+        {
+            //for sorting
+            //ViewData["CurrentSort"] = SortOrder;
+            //ViewData["NameSortParm"] = String.IsNullOrEmpty(SortOrder) ? "name_desc" : "";
+            ViewBag.UserName = HttpContext.Session.GetString("Username");
+            ViewBag.name = HttpContext.Session.GetString("name");
+
+
+
+            if (ViewBag.UserName != null)
+            {
+
+
+
+                if (Search != null)
+                {
+                    PageNumber = 1;
+                }
+                else
+                {
+                    Search = CurrentFilter;
+                }
+
+
+
+
+                ViewData["CurrentFilter"] = Search;
+
+
+
+                var moviename = from s in _context.MovieTbls
+                               select s;
+                if (!string.IsNullOrEmpty(Search))
+                {
+                    moviename = moviename.Where(s => s.Date ==Convert.ToDateTime( Search));
+                }
+
+
+
+                //else if (!string.IsNullOrEmpty(Search))
+                //{
+                //    students = students.Where(s => s.Brand == Search);
+                //}
+                //else
+                //{
+
+
+
+                //}
+                //switch (SortOrder)
+                //{
+                //    case "name_desc":
+                //        students = students.OrderByDescending(s => s.MovieName);
+                //        break;
+                //    default:
+                //        students = students.OrderBy(s => s.MovieName);
+                //        break;
+                //}
+                int pageSize = 3;
+                return View(await PaginatedList<MovieTbl>.CreateAsync(moviename.AsNoTracking(), PageNumber ?? 1, pageSize));
+            }
+            if (ViewBag.name != null)
+            {
+
+
+
+                if (Search != null)
+                {
+                    PageNumber = 1;
+                }
+                else
+                {
+                    Search = CurrentFilter;
+                }
+
+
+
+
+                ViewData["CurrentFilter"] = Search;
+
+
+
+                var students = from s in _context.MovieTbls
+                               select s;
+                if (!string.IsNullOrEmpty(Search))
+                {
+                    students = students.Where(s => s.Date == Convert.ToDateTime(Search));
+                }
+
+
+
+                //else if (!string.IsNullOrEmpty(Search))
+                //{
+                //    students = students.Where(s => s.Brand == Search);
+                //}
+                //else
+                //{
+
+
+
+                //}
+                //switch (SortOrder)
+                //{
+                //    case "name_desc":
+                //        students = students.OrderByDescending(s => s.MovieName);
+                //        break;
+                //    default:
+                //        students = students.OrderBy(s => s.MovieName);
+                //        break;
+                //}
+                int pageSize = 3;
+                return View(await PaginatedList<MovieTbl>.CreateAsync(students.AsNoTracking(), PageNumber ?? 1, pageSize));
+            }
+            else
+            {
+                return RedirectToAction("Login", "Login");
+            }
+        }
     }
 }

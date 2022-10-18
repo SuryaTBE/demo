@@ -50,7 +50,7 @@ namespace demo.Controllers
 
         public int SeatCheck(string a, DateTime d, int id)//Seat availability
         {
-            List<BookingTbl> Book = _context.BookingTbl.ToList();
+            //List<BookingTbl> Book = _context.BookingTbl.ToList();
             List<OrderDetails> detail=_context.OrderDetails.ToList();
             string[] SeatList = a.Split(",", StringSplitOptions.RemoveEmptyEntries);
             for(int b=0;b<SeatList.Length; b++)
@@ -61,18 +61,18 @@ namespace demo.Controllers
                 //}
                 
 
-                foreach (var i in Book)
-                    {
-                    string[] Seatnos = i.SeatNo.Split(",");
-                    for (int j = 0; j < Seatnos.Length; j++)
-                        {
-                            if ((i.Date == d) && (i.MovieId == id) && (Seatnos[j] == SeatList[b]))
-                            {
-                                return 0;
-                            }
-                        }
-                    }
-                foreach (var od in detail)
+                //foreach (var i in Book)//Check in Cart
+                //    {
+                //    string[] Seatnos = i.SeatNo.Split(",");
+                //    for (int j = 0; j < Seatnos.Length; j++)
+                //        {
+                //            if ((i.Date == d) && (i.MovieId == id) && (Seatnos[j] == SeatList[b]))
+                //            {
+                //                return 0;
+                //            }
+                //        }
+                //    }
+                foreach (var od in detail)//check in orderdetails
                 {
                     string[] Seatnos = od.SeatNo.Split(",", StringSplitOptions.RemoveEmptyEntries);
                     for (int j = 0; j < Seatnos.Length; j++)
@@ -92,15 +92,15 @@ namespace demo.Controllers
         {
             
             int id = (int)HttpContext.Session.GetInt32("UserId");
-            var sampleContext = _context.BookingTbl.Include(b => b.Movie).Include(b => b.User);
+            //var sampleContext = _context.BookingTbl.Include(b => b.Movie).Include(b => b.User);
            
-            List<BookingTbl> cart = (from i in _context.BookingTbl where i.UserId == id select i).ToList();
+            List<BookingTbl> cart = (from i in _context.BookingTbl.Include(b => b.Movie).Include(b => b.User) where i.UserId == id select i).ToList();
             if(cart.Count== 0)
             {
                 ViewBag.ErrorMessage = "Your Cart Is Empty..";
-                return View(await sampleContext.ToListAsync());
+                return View(cart);
             }
-            return View(await sampleContext.ToListAsync());
+            return View(cart);
         }
 
         // GET: Booking/Details/5
@@ -321,8 +321,28 @@ public IActionResult Payment(int id)
 
             if (m.Paid == m.Amount)
             {
+                var UserId = HttpContext.Session.GetInt32("UserId");
+                List<BookingTbl> book = (from i in _context.BookingTbl where i.UserId == UserId select i).ToList();
+                //var pid = (int)HttpContext.Session.GetInt32("Productid");
 
+                //Product1 p = new Product1();
+
+                //var c = (from t in _context.Carts
+                //         where t.Productid == pid
+                //         select t).SingleOrDefault();
                 _context.OrderMasterTbls.Update(m);
+                _context.SaveChanges();
+                foreach (var j in book)
+                {
+                    var s = (from i in _context.MovieTbls
+                             where i.MovieId == j.MovieId
+                             select i).SingleOrDefault();
+                    s.capacity -= j.NoOfTickets;
+                    _context.MovieTbls.Update(s);
+                }
+                //_context.OrderMasterTbls.Update(m);
+                _context.SaveChanges();
+                _context.BookingTbl.RemoveRange(book);
                 _context.SaveChanges();
                 return RedirectToAction("Thankyou");
             }
@@ -336,8 +356,18 @@ public IActionResult Payment(int id)
         [HttpPost]
         public async Task<IActionResult> ProceedtoBuy()
         {
-            var UserId = HttpContext.Session.GetInt32("UserId"); 
+            var UserId = HttpContext.Session.GetInt32("UserId");
             List<BookingTbl> cart = (from i in _context.BookingTbl where i.UserId == UserId select i).ToList();
+            foreach (var i in cart)
+            {
+                int a = SeatCheck(i.SeatNo, i.Date, i.MovieId);
+                if(a==0)
+                {
+                    var msg = "Seat is already booked.\n Try selecting other seats";
+                    HttpContext.Session.SetString("msg",msg);
+                    return RedirectToAction("Index");
+                }
+            }
             List<OrderDetails> od = new List<OrderDetails>();
             OrderMasterTbl om = new OrderMasterTbl();
 
@@ -368,8 +398,7 @@ public IActionResult Payment(int id)
                 }
                 _context.AddRange(od);
                 _context.SaveChanges();
-                _context.BookingTbl.RemoveRange(cart);
-                _context.SaveChanges();
+                
 
                 return RedirectToAction("Payment", new { id = om.OrderMasterId });
             
