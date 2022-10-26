@@ -7,6 +7,7 @@
     //ViewData["Title"] = "Bike Bully";
     ViewBag.Username = @HttpContextAccesor.HttpContext.Session.GetString("Username");
     ViewBag.name = @HttpContextAccesor.HttpContext.Session.GetString("name");
+    
     if (ViewBag.Username != null)
     {
         Layout = "UserLayout";
@@ -118,11 +119,17 @@
                     @*  <td>
             @Html.DisplayFor(modelItem => item.IdNavigation)
             </td>*@
-                    <td>
+                   @* <td>*@
                         @*@Html.DisplayFor(modelItem => item.Password)*@
                         @* </td>*@
+                    @if(ViewBag.ErrMessage != null)
+                    {
+                    <div class="text-danger">
+                        @ViewBag.ErrMessage
+                    </div>
+                    }
                     <td>
-                        <a asp-action="BookNow" asp-route-id="@item.MovieId">Buynow</a> |
+                        <a asp-action="BookNow" asp-route-id="@item.MovieId">BookNow</a> |
                         <a asp-action="Details" asp-route-id="@item.MovieId">Details</a> |
                             @*<a asp-action="Delete" asp-route-id="@item.StudentId">Delete</a>*@
                     </td>

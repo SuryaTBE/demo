@@ -149,6 +149,7 @@ namespace demo.Controllers
             //          select i).SingleOrDefault();
             //if (id == null)
             //{
+            int capacity = (int)HttpContext.Session.GetInt32("Capacity");
                 int cost = (int)HttpContext.Session.GetInt32("Cost");
                 bookingTbl.AmountTotal = bookingTbl.NoOfTickets * cost;
                 bookingTbl.Date=Convert.ToDateTime(HttpContext.Session.GetString("Date"));
@@ -159,60 +160,68 @@ namespace demo.Controllers
             //This one is for search area
             //if ((bookingTbl.Date >= DateTime.Now) && (bookingTbl.Date <= DateTime.Today.AddDays(5)))
             //{
-            if (SeatVal(SeatNo, bookingTbl.NoOfTickets))   
+            if (bookingTbl.NoOfTickets < capacity)
             {
-                if (SeatnoVal(bookingTbl.SeatNo))
+                if (SeatVal(SeatNo, bookingTbl.NoOfTickets))
                 {
-                    int i = SeatCheck(bookingTbl.SeatNo, bookingTbl.Date, bookingTbl.MovieId);
-                    if (i == 1)
+                    if (SeatnoVal(bookingTbl.SeatNo))
                     {
-                        bookingTbl.SeatNo = SeatNo;
-                        _context.Add(bookingTbl);
-                        await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(Index));
+                        int i = SeatCheck(bookingTbl.SeatNo, bookingTbl.Date, bookingTbl.MovieId);
+                        if (i == 1)
+                        {
+                            bookingTbl.SeatNo = SeatNo;
+                            _context.Add(bookingTbl);
+                            await _context.SaveChangesAsync();
+                            return RedirectToAction(nameof(Index));
+                        }
+                        else
+                        {
+                            //ViewBag.ErrorMessage = bookingTbl.SeatNo;
+                            //HttpContext.Session.SetString("Already Booked",bookingTbl.SeatNo);
+                            ViewBag.ErrorMessage = "Already Booked.";
+                            //return RedirectToAction("create");
+                            return View();
+                        }
                     }
                     else
                     {
-                        //ViewBag.ErrorMessage = bookingTbl.SeatNo;
-                        //HttpContext.Session.SetString("Already Booked",bookingTbl.SeatNo);
-                        ViewBag.ErrorMessage = "Already Booked.";
-                        //return RedirectToAction("create");
+                        ViewBag.SeatErrorMessage = "Please Enter the Valid SeatNo";
                         return View();
+
                     }
                 }
                 else
                 {
-                    ViewBag.SeatErrorMessage = "Please Enter the Valid SeatNo";
+                    ViewBag.ValidationMesssage = "Selected seats and No of seats mismatching....\n";
                     return View();
-                    
                 }
+
+                //}
+
+                //else
+                //{
+                //    ViewBag.ErrorMessage = "Movie is not available for the selected date...\n Please select any alternate date";
+                //    return View();
+                //}
+
+                //else
+                //{
+                //    id.NoOfTickets += bookingTbl.NoOfTickets;
+                //    id.AmountTotal = id.NoOfTickets * (from i in _context.BookingTbl
+                //                                       where i.MovieId == bookingTbl.MovieId && i.Date == bookingTbl.Date
+                //                                       select i.Movie.Cost).SingleOrDefault();
+                //    await _context.SaveChangesAsync();
+                //    return RedirectToAction(nameof(Index));
+
+                //}
+                //ViewData["MovieId"] = new SelectList(_context.movieTbls, "MovieId", "MovieId", bookingTbl.MovieId);
+                //ViewData["UserId"] = new SelectList(_context.userTbls, "UserId", "UserId", bookingTbl.UserId);
             }
             else
             {
-                ViewBag.ValidationMesssage = "Selected seats and No of seats mismatching....\n";
+                ViewBag.ErrMessage = "Your No of Tickets is greater than that of available tickets\nPlease enter lesser value";
                 return View();
             }
-            
-            //}
-
-            //else
-            //{
-            //    ViewBag.ErrorMessage = "Movie is not available for the selected date...\n Please select any alternate date";
-            //    return View();
-            //}
-
-            //else
-            //{
-            //    id.NoOfTickets += bookingTbl.NoOfTickets;
-            //    id.AmountTotal = id.NoOfTickets * (from i in _context.BookingTbl
-            //                                       where i.MovieId == bookingTbl.MovieId && i.Date == bookingTbl.Date
-            //                                       select i.Movie.Cost).SingleOrDefault();
-            //    await _context.SaveChangesAsync();
-            //    return RedirectToAction(nameof(Index));
-
-            //}
-            //ViewData["MovieId"] = new SelectList(_context.movieTbls, "MovieId", "MovieId", bookingTbl.MovieId);
-            //ViewData["UserId"] = new SelectList(_context.userTbls, "UserId", "UserId", bookingTbl.UserId);
             return View(bookingTbl);
         }
 
@@ -390,7 +399,8 @@ public IActionResult Payment(int id)
                     detail.NoOfTickets = item.NoOfTickets;
                 detail.MovieName = item.MovieName;
                     detail.UserId = (int)HttpContext.Session.GetInt32("UserId");
-                    detail.MovieDate = Convert.ToDateTime(HttpContext.Session.GetString("Date"));
+                    string dt= HttpContext.Session.GetString("Date");
+                    detail.MovieDate = Convert.ToDateTime(dt);
                     detail.SeatNo = item.SeatNo;
                     detail.Cost = item.AmountTotal;
                     detail.OrderMasterId = om.OrderMasterId;

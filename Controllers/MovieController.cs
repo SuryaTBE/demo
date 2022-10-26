@@ -60,6 +60,12 @@ namespace demo.Controllers
             HttpContext.Session.SetString("MovieName", movieTbl.MovieName);
             HttpContext.Session.SetInt32("Cost",movieTbl.Cost);
             HttpContext.Session.SetString("Date", movieTbl.Date.ToString());
+            HttpContext.Session.SetInt32("Capacity", movieTbl.capacity);
+            if (movieTbl.capacity <= 0)
+            {
+                ViewBag.ErrMessage = "HouseFull";
+                return RedirectToAction("DateSearch");
+            }
             if (movieTbl == null)
             {
                 return NotFound();
@@ -113,7 +119,7 @@ namespace demo.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MovieId,MovieName,Image,From,To,Slot,capacity")] MovieTbl movieTbl)
+        public async Task<IActionResult> Edit(int id, [Bind("MovieId,MovieName,Image,Date,Slot,Cost,capacity")] MovieTbl movieTbl)
         {
             if (id != movieTbl.MovieId)
             {

@@ -14,7 +14,7 @@ namespace demo.Models
         public string? Image {get; set; }
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
-       public string Slot { get; set; }
+        public string Slot { get; set; }
         public int Cost { get; set; }
         public int capacity { get; set; }
 
