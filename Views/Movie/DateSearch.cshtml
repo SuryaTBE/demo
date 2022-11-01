@@ -35,11 +35,14 @@
 
 @using (Html.BeginForm("DateSearch", "Movie", FormMethod.Post))
 {
-    <div>
-        Search by Movie Date @Html.TextBox("Search")
-        <input id="Submit" type="submit" value="Search" />
-        <a asp-action="DateSearch">Back to details</a>
-    </div>
+        <div>
+            Search by Movie Date @Html.TextBox("Search")
+            <input id="Submit" type="submit" value="Search" />
+            <a asp-action="DateSearch">Back to details</a>
+        </div>
+        
+   
+
 }
 
 

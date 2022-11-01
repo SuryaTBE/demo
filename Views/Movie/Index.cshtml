@@ -13,71 +13,33 @@
     }
     }
 
-<h1>Index</h1>
+
+
 
 
 <table class="table">
     @if (ViewBag.UserName != null)
     {
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.MovieName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Image)
-                </th>
-                @*<th>
-                    @Html.DisplayNameFor(model => model.From)
-                </th>*@
-                <th>
-                    @Html.DisplayNameFor(model => model.Slot)
-                </th>
-               @* <th>
-                    @Html.DisplayNameFor(model => model.Cost)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.capacity)
-                </th>*@
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.MovieName)
-                    </td>
-                    <td>
-                        @* @Html.DisplayFor(modelItem => item.Image)*@
-                        <img src="/Image/@item.Image" alt="Image" height="100" width="100" />
-                    </td>
-                    @*<td>
-                        @Html.DisplayFor(modelItem => item.From)
-                    </td>*@
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Slot)
-                    </td>
-                   @* <td>
-                        @Html.DisplayFor(modelItem => item.Cost)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.capacity)
-                    </td>*@
-                    <td>
-                        @*<a asp-controller="Booking" asp-action="create" asp-route-id="@item.MovieId">BookNow</a> |*@
-                        <a asp-action="BookNow" asp-route-id="@item.MovieId">Book Now</a> |
-                        <a asp-action="Details" asp-route-id="@item.MovieId">Details</a> |
-                       
-                    </td>
-                </tr>
-            }
-        </tbody>
-
+        <h1>Search By Date</h1>
+        if(ViewBag.Message!=null)
+        {
+                <div class="text-danger">
+                    @ViewBag.Message
+                </div>
+        }
+        else
+        {
+          <form asp-controller="Movie" asp-action="search">
+            <p>
+                Search By Date: <input type="text" name="SearchString" />
+                <input type="submit" value="Search" />
+            </p>
+          </form>
+        }
     }
     else
     {
+        <h1>Index</h1>
     <p>
         <a asp-action="Create">Create New</a>
     </p>

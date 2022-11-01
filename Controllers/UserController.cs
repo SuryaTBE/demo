@@ -28,7 +28,7 @@ namespace demo.Controllers
             {
                 HttpContext.Session.SetString("Username", result.UserName);
                 HttpContext.Session.SetInt32("UserId", result.UserId);
-                return RedirectToAction("DateSearch", "Movie");
+                return RedirectToAction("Index", "Movie");
             }
             else
                 return View();
