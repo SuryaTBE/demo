@@ -23,14 +23,13 @@ namespace demo.Controllers
         {
             return View(await _context.MovieTbls.ToListAsync());
         }
-        public async Task<IActionResult> Search(string searchString)
+        public async Task<IActionResult> Search(DateTime searchdate)
         {
-            DateTime dt = Convert.ToDateTime(searchString);
-            if (dt > DateTime.Now)
+            if (searchdate > DateTime.Now)
             {
                 var movies = from m in _context.MovieTbls
                              select m;
-                movies = movies.Where(s => s.Date!.Equals(dt));
+                movies = movies.Where(s => s.Date!.Equals(searchdate));
                 return View(await movies.ToListAsync());
             }
             else
@@ -39,7 +38,7 @@ namespace demo.Controllers
                 return View("Index");
             }
 
-            
+
         }
         public async Task<IActionResult> Details(int? id)
         {
@@ -76,19 +75,19 @@ namespace demo.Controllers
             //HttpContext.Session.SetString("Moviename",movieTbl.MovieName);
             HttpContext.Session.SetInt32("MovieId", movieTbl.MovieId);
             HttpContext.Session.SetString("MovieName", movieTbl.MovieName);
-            HttpContext.Session.SetInt32("Cost",movieTbl.Cost);
+            HttpContext.Session.SetInt32("Cost", movieTbl.Cost);
             HttpContext.Session.SetString("Date", movieTbl.Date.ToString());
             HttpContext.Session.SetInt32("Capacity", movieTbl.capacity);
             if (movieTbl.capacity <= 0)
             {
                 ViewBag.ErrMessage = "HouseFull";
-                return RedirectToAction("DateSearch");
+                return RedirectToAction("Search");
             }
             if (movieTbl == null)
             {
                 return NotFound();
             }
- 
+
             return RedirectToAction("Create", "Booking");
 
             //return View(movieTbl);
@@ -105,7 +104,7 @@ namespace demo.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create( MovieTbl movieTbl)
+        public async Task<IActionResult> Create(MovieTbl movieTbl)
         {
             if (ModelState.IsValid)
             {
@@ -199,133 +198,15 @@ namespace demo.Controllers
             {
                 _context.MovieTbls.Remove(movieTbl);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool MovieTblExists(int id)
         {
-          return _context.MovieTbls.Any(e => e.MovieId == id);
-        }
-
-        public async Task<IActionResult> DateSearch(string Search, int? PageNumber, string CurrentFilter)
-        {
-            //for sorting
-            //ViewData["CurrentSort"] = SortOrder;
-            //ViewData["NameSortParm"] = String.IsNullOrEmpty(SortOrder) ? "name_desc" : "";
-            ViewBag.UserName = HttpContext.Session.GetString("Username");
-            ViewBag.name = HttpContext.Session.GetString("name");
-
-                if (ViewBag.UserName != null)
-                {
-
-
-
-                    if (Search != null)
-                    {
-                        PageNumber = 1;
-                    }
-                    else
-                    {
-                        Search = CurrentFilter;
-                    }
-
-
-
-
-                    ViewData["CurrentFilter"] = Search;
-
-
-
-                    var moviename = from s in _context.MovieTbls
-                                    select s;
-                    if (!string.IsNullOrEmpty(Search))
-                    {
-                        moviename = moviename.Where(s => s.Date == Convert.ToDateTime(Search));
-                    }
-
-
-
-                    //else if (!string.IsNullOrEmpty(Search))
-                    //{
-                    //    students = students.Where(s => s.Brand == Search);
-                    //}
-                    //else
-                    //{
-
-
-
-                    //}
-                    //switch (SortOrder)
-                    //{
-                    //    case "name_desc":
-                    //        students = students.OrderByDescending(s => s.MovieName);
-                    //        break;
-                    //    default:
-                    //        students = students.OrderBy(s => s.MovieName);
-                    //        break;
-                    //}
-                    int pageSize = 3;
-                    return View(await PaginatedList<MovieTbl>.CreateAsync(moviename.AsNoTracking(), PageNumber ?? 1, pageSize));
-                }
-                if (ViewBag.name != null)
-                {
-
-
-
-                    if (Search != null)
-                    {
-                        PageNumber = 1;
-                    }
-                    else
-                    {
-                        Search = CurrentFilter;
-                    }
-
-
-
-
-                    ViewData["CurrentFilter"] = Search;
-
-
-
-                    var students = from s in _context.MovieTbls
-                                   select s;
-                    if (!string.IsNullOrEmpty(Search))
-                    {
-                        students = students.Where(s => s.Date == Convert.ToDateTime(Search));
-                    }
-
-
-
-                    //else if (!string.IsNullOrEmpty(Search))
-                    //{
-                    //    students = students.Where(s => s.Brand == Search);
-                    //}
-                    //else
-                    //{
-
-
-
-                    //}
-                    //switch (SortOrder)
-                    //{
-                    //    case "name_desc":
-                    //        students = students.OrderByDescending(s => s.MovieName);
-                    //        break;
-                    //    default:
-                    //        students = students.OrderBy(s => s.MovieName);
-                    //        break;
-                    //}
-                    int pageSize = 3;
-                    return View(await PaginatedList<MovieTbl>.CreateAsync(students.AsNoTracking(), PageNumber ?? 1, pageSize));
-                }
-                else
-                {
-                    return RedirectToAction("Login", "Login");
-                }
-            }
+            return _context.MovieTbls.Any(e => e.MovieId == id);
         }
     }
+}
 
