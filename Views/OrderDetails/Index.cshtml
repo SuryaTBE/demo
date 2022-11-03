@@ -71,8 +71,14 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Cost)
                         </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.OrderDetailId">Cancel Tickets</a>
+
+                        </td>
                     </tr>
+                    
                 }
+                
             }
 
         </tbody>

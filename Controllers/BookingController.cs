@@ -50,28 +50,10 @@ namespace demo.Controllers
 
         public int SeatCheck(string a, DateTime d, int id)//Seat availability
         {
-            //List<BookingTbl> Book = _context.BookingTbl.ToList();
             List<OrderDetails> detail=_context.OrderDetails.ToList();
             string[] SeatList = a.Split(",", StringSplitOptions.RemoveEmptyEntries);
             for(int b=0;b<SeatList.Length; b++)
             {
-                //if ((Convert.ToInt32(SeatList[b]) > 50) && (Convert.ToInt32(SeatList[b]) <= 0))
-                //{
-
-                //}
-                
-
-                //foreach (var i in Book)//Check in Cart
-                //    {
-                //    string[] Seatnos = i.SeatNo.Split(",");
-                //    for (int j = 0; j < Seatnos.Length; j++)
-                //        {
-                //            if ((i.Date == d) && (i.MovieId == id) && (Seatnos[j] == SeatList[b]))
-                //            {
-                //                return 0;
-                //            }
-                //        }
-                //    }
                 foreach (var od in detail)//check in orderdetails
                 {
                     string[] Seatnos = od.SeatNo.Split(",", StringSplitOptions.RemoveEmptyEntries);
@@ -126,10 +108,6 @@ namespace demo.Controllers
         // GET: Booking/Create
         public IActionResult Create(int id)
         {
-            
-            //ViewData["MovieId"] = new SelectList(_context.movieTbls, "MovieId", "MovieId");
-            //ViewData["UserId"] = new SelectList(_context.userTbls, "UserId", "UserId");
-
             return View();
         }
 
@@ -144,11 +122,6 @@ namespace demo.Controllers
                 bookingTbl.MovieId = (int)HttpContext.Session.GetInt32("MovieId");
                 bookingTbl.UserId = (int)HttpContext.Session.GetInt32("UserId");
                 bookingTbl.MovieName = HttpContext.Session.GetString("MovieName");
-            //var id = (from i in _context.BookingTbl
-            //          where i.UserId == bookingTbl.UserId && i.MovieId == bookingTbl.MovieId && i.Date == bookingTbl.Date
-            //          select i).SingleOrDefault();
-            //if (id == null)
-            //{
             int capacity = (int)HttpContext.Session.GetInt32("Capacity");
                 int cost = (int)HttpContext.Session.GetInt32("Cost");
                 bookingTbl.AmountTotal = bookingTbl.NoOfTickets * cost;
@@ -156,10 +129,6 @@ namespace demo.Controllers
             string Seat = bookingTbl.SeatNo;
             string[] seats = Seat.Split(",", StringSplitOptions.RemoveEmptyEntries);
             string SeatNo = string.Join(",", seats);
-
-            //This one is for search area
-            //if ((bookingTbl.Date >= DateTime.Now) && (bookingTbl.Date <= DateTime.Today.AddDays(5)))
-            //{
             if (bookingTbl.NoOfTickets < capacity)
             {
                 if (SeatVal(SeatNo, bookingTbl.NoOfTickets))
@@ -176,10 +145,8 @@ namespace demo.Controllers
                         }
                         else
                         {
-                            //ViewBag.ErrorMessage = bookingTbl.SeatNo;
-                            //HttpContext.Session.SetString("Already Booked",bookingTbl.SeatNo);
+                            
                             ViewBag.ErrorMessage = "Already Booked.";
-                            //return RedirectToAction("create");
                             return View();
                         }
                     }
@@ -192,30 +159,9 @@ namespace demo.Controllers
                 }
                 else
                 {
-                    ViewBag.ValidationMesssage = "Selected seats and No of seats mismatching....\n";
+                    ViewBag.ValidationMesssage = "Selected seats and No of seats mismatching....";
                     return View();
                 }
-
-                //}
-
-                //else
-                //{
-                //    ViewBag.ErrorMessage = "Movie is not available for the selected date...\n Please select any alternate date";
-                //    return View();
-                //}
-
-                //else
-                //{
-                //    id.NoOfTickets += bookingTbl.NoOfTickets;
-                //    id.AmountTotal = id.NoOfTickets * (from i in _context.BookingTbl
-                //                                       where i.MovieId == bookingTbl.MovieId && i.Date == bookingTbl.Date
-                //                                       select i.Movie.Cost).SingleOrDefault();
-                //    await _context.SaveChangesAsync();
-                //    return RedirectToAction(nameof(Index));
-
-                //}
-                //ViewData["MovieId"] = new SelectList(_context.movieTbls, "MovieId", "MovieId", bookingTbl.MovieId);
-                //ViewData["UserId"] = new SelectList(_context.userTbls, "UserId", "UserId", bookingTbl.UserId);
             }
             else
             {
@@ -332,13 +278,6 @@ public IActionResult Payment(int id)
             {
                 var UserId = HttpContext.Session.GetInt32("UserId");
                 List<BookingTbl> book = (from i in _context.BookingTbl where i.UserId == UserId select i).ToList();
-                //var pid = (int)HttpContext.Session.GetInt32("Productid");
-
-                //Product1 p = new Product1();
-
-                //var c = (from t in _context.Carts
-                //         where t.Productid == pid
-                //         select t).SingleOrDefault();
                 _context.OrderMasterTbls.Update(m);
                 _context.SaveChanges();
                 foreach (var j in book)
@@ -349,7 +288,6 @@ public IActionResult Payment(int id)
                     s.capacity -= j.NoOfTickets;
                     _context.MovieTbls.Update(s);
                 }
-                //_context.OrderMasterTbls.Update(m);
                 _context.SaveChanges();
                 _context.BookingTbl.RemoveRange(book);
                 _context.SaveChanges();
