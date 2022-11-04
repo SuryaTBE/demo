@@ -1,6 +1,9 @@
 ﻿
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccesor
+<head>
+    <link rel="stylesheet" href="~/css/SandStoneTheme.css" />
+</head>
 
 
 
@@ -11,27 +14,29 @@
             }
             @if (ViewBag.UserName != null)
             {
-                <li class="nav-item">
-                    <a @*id="Manage"*@ class="nav-link text-dark" @*asp-controller="Home" asp-action="Privacy"*@ title="Manage">Hello @ViewBag.UserName</a>
-                </li>
-                <li class="nav-item">
+
+                    <li class="nav-item">
+                        <a @*id="Manage"*@ class="nav-link text-dark" @*asp-controller="Home" asp-action="Privacy"*@ title="Manage">Hello @ViewBag.UserName</a>
+                    </li>
+                  <li class="nav-item">
                     <form>
                         @* class="form-inline" asp-route-returnUrl="@Url.Action("Login", "Login", new { area = "" })">*@
-                        <button id="Logout" type="submit" class="nav-link btn btn-link text-dark" asp-controller="User" asp-action="Logout">Logout</button>
+                <button id="Logout" type="submit" class=" btn btn-light" asp-controller="User" asp-action="Logout">Logout</button>
                     </form>
-                </li>
+                  </li>
             }
     else if (ViewBag.name != null)
     {
-        <li class="nav-item">
-            <a @*id="Manage"*@ class="nav-link text-dark" @*asp-controller="Home" asp-action="Privacy"*@ title="Manage">Hello @ViewBag.name</a>
-        </li>
-        <li class="nav-item">
-            <form>
-                @* class="form-inline" asp-route-returnUrl="@Url.Action("Login", "Login", new { area = "" })">*@
-                <button id="Logout" type="submit" class="nav-link btn btn-link text-dark" asp-controller="Admin" asp-action="Logout">Logout</button>
-            </form>
-        </li>
+            <li class="nav-item">
+                <a @*id="Manage"*@ class="nav-link text-dark" @*asp-controller="Home" asp-action="Privacy"*@ title="Manage">Hello @ViewBag.name</a>
+            </li>
+            <li class="nav-item">
+                <form>
+                 @* class="form-inline" asp-route-returnUrl="@Url.Action("Login", "Login", new { area = "" })">*@
+                <button id="Logout" type="submit" class="btn btn-light" asp-controller="Admin" asp-action="Logout">Logout</button>
+                </form>
+            </li>
+        
     }
     else
     {

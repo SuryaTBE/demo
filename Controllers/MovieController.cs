@@ -77,6 +77,7 @@ namespace demo.Controllers
             HttpContext.Session.SetString("MovieName", movieTbl.MovieName);
             HttpContext.Session.SetInt32("Cost", movieTbl.Cost);
             HttpContext.Session.SetString("Date", movieTbl.Date.ToString());
+            HttpContext.Session.SetString("Slot",movieTbl.Slot);
             HttpContext.Session.SetInt32("Capacity", movieTbl.capacity);
             if (movieTbl.capacity <= 0)
             {

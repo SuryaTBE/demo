@@ -39,10 +39,25 @@
     }
     else
     {
-        <h1>Index</h1>
+        <h1>Movies Running</h1>
     <p>
-        <a asp-action="Create">Create New</a>
+        <a asp-action="Create">Add movie</a>
     </p>
+        <h1>Search By Date</h1>
+        if (ViewBag.Message != null)
+        {
+            <div class="text-danger">
+                @ViewBag.Message
+            </div>
+        }
+        else
+        {
+            <form asp-controller="Movie" asp-action="search">
+                <p>
+                    Search By Date: <input type="date" name="searchdate" />
+                    <input type="submit" value="Search" />
+                </p>
+            </form>
         <thead>
             <tr>
                 <th>
@@ -90,12 +105,13 @@
                         @Html.DisplayFor(modelItem => item.capacity)
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.MovieId">Edit</a> |
+                       @* <a asp-action="Edit" asp-route-id="@item.MovieId">Edit</a> |*@
                         <a asp-action="Details" asp-route-id="@item.MovieId">Details</a> |
                         <a asp-action="Delete" asp-route-id="@item.MovieId">Delete</a>
                     </td>
                 </tr>
             }
         </tbody>
+        }
     }
 </table>

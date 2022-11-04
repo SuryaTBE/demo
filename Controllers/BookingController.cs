@@ -339,6 +339,7 @@ public IActionResult Payment(int id)
                     detail.UserId = (int)HttpContext.Session.GetInt32("UserId");
                     string dt= HttpContext.Session.GetString("Date");
                     detail.MovieDate = Convert.ToDateTime(dt);
+                    detail.Slot = HttpContext.Session.GetString("Slot");
                     detail.SeatNo = item.SeatNo;
                     detail.Cost = item.AmountTotal;
                     detail.OrderMasterId = om.OrderMasterId;

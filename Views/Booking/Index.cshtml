@@ -7,7 +7,7 @@
     ViewBag.msg = @HttpContextAccesor.HttpContext.Session.GetString("msg");
 }
 
-<h1>Index</h1>
+<h1>Cart</h1>
   @if (ViewBag.msg != null)
     {
         <div class="text-danger">@ViewBag.msg</div>
