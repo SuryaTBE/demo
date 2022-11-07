@@ -51,6 +51,11 @@
                 <label asp-for="SeatNo" class="control-label"></label>
                 <input asp-for="SeatNo" class="form-control" />
                 <span asp-validation-for="SeatNo" class="text-danger"></span>
+                @if(ViewBag.Emessage!=null)
+                {
+                    <div class="text-danger">@ViewBag.Emessage
+                        </div>
+                }
                 @if(ViewBag.ErrMessage!=null)
                 {
                     <div class="text-danger">

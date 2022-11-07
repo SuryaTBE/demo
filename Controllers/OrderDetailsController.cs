@@ -32,26 +32,35 @@ namespace demo.Controllers
 
                 var OrderTbl = await _context.OrderDetails
                     .FirstOrDefaultAsync(m => m.OrderDetailId == id);
-            HttpContext.Session.SetInt32("MId", OrderTbl.MovieId);
+            if (OrderTbl.MovieDate > DateTime.Now)
+            {
 
-            if (OrderTbl == null)
+                HttpContext.Session.SetInt32("MId", OrderTbl.MovieId);
+
+                if (OrderTbl == null)
                 {
                     return NotFound();
                 }
-                    return View(OrderTbl);
+                return View(OrderTbl);
             }
+            else
+            {
+                ViewBag.CMessage = "Sorry,Your deadline for canceling is finished.";
+                return View("Index");
+            }
+        }
         public async Task<IActionResult> Cancel(int? id)
         {
             var orderdetail = await _context.OrderDetails.FindAsync(id);
-            int no = orderdetail.NoOfTickets;
-            int mid = (int)HttpContext.Session.GetInt32("MId");
-            var s = (from i in _context.MovieTbls
-                     where i.MovieId == mid
-                     select i).SingleOrDefault();
-            s.capacity += no;
-            _context.OrderDetails.Remove(orderdetail);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                int no = orderdetail.NoOfTickets;
+                int mid = (int)HttpContext.Session.GetInt32("MId");
+                var s = (from i in _context.MovieTbls
+                         where i.MovieId == mid
+                         select i).SingleOrDefault();
+                s.capacity += no;
+                _context.OrderDetails.Remove(orderdetail);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
         }
 
     }

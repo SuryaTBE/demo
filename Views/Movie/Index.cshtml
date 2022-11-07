@@ -60,6 +60,9 @@
             </form>
         <thead>
             <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.MovieId)
+                    </th>
                 <th>
                     @Html.DisplayNameFor(model => model.MovieName)
                 </th>
@@ -85,6 +88,9 @@
             @foreach (var item in Model)
             {
                 <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MovieId)
+                    </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.MovieName)
                     </td>

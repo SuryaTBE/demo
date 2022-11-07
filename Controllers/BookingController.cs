@@ -15,37 +15,41 @@ namespace demo.Controllers
         {
             _context = context;
         }
-        public bool SeatVal(string seatno,int n)//For No of tickets and Seat selection validation
+        public bool SeatVal(string seatno, int n)//For No of tickets and Seat selection validation
         {
-            bool a=true;
-            string[] seatArr = seatno.Split(",",StringSplitOptions.RemoveEmptyEntries);
-            if(seatArr.Length == n)
+            bool a = true;
+            string[] seatArr = seatno.Split(",", StringSplitOptions.RemoveEmptyEntries);
+            if (seatArr.Length == n)
             {
                 return true;
-                
+
             }
             else
                 return false;
-            
+
         }
         public bool SeatnoVal(string s) //Seat no validation 
         {
-            bool a = true;
-            string[] snoArr = s.Split(",",StringSplitOptions.RemoveEmptyEntries);
-            for(int i = 0; i < snoArr.Length; i++)
-            {
-                if (Convert.ToInt32(snoArr[i]) > 0 && Convert.ToInt32(snoArr[i])<=50)
+            
+                bool a = true;
+                string[] snoArr = s.Split(",", StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < snoArr.Length; i++)
                 {
-                    a= true;
+                    if (Convert.ToInt32(snoArr[i]) > 0 && Convert.ToInt32(snoArr[i]) <= 50)
+                    {
+                        a = true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                
+                
                 }
-                else
-                {
-                    return false;
-                }
-            }
            
 
-            return a;
+                return a;
+            
         }
 
         public int SeatCheck(string a, DateTime d, int id)//Seat availability
@@ -118,130 +122,83 @@ namespace demo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(BookingTbl bookingTbl)
         {
+            try 
+            {
            
                 bookingTbl.MovieId = (int)HttpContext.Session.GetInt32("MovieId");
                 bookingTbl.UserId = (int)HttpContext.Session.GetInt32("UserId");
                 bookingTbl.MovieName = HttpContext.Session.GetString("MovieName");
-            int capacity = (int)HttpContext.Session.GetInt32("Capacity");
+                int capacity = (int)HttpContext.Session.GetInt32("Capacity");
                 int cost = (int)HttpContext.Session.GetInt32("Cost");
                 bookingTbl.AmountTotal = bookingTbl.NoOfTickets * cost;
                 bookingTbl.Date=Convert.ToDateTime(HttpContext.Session.GetString("Date"));
-            string Seat = bookingTbl.SeatNo;
-            string[] seats = Seat.Split(",", StringSplitOptions.RemoveEmptyEntries);
-            string SeatNo = string.Join(",", seats);
-            if (bookingTbl.NoOfTickets < capacity)
-            {
-                if (SeatVal(SeatNo, bookingTbl.NoOfTickets))
+                string Seat = bookingTbl.SeatNo;
+                string[] seats = Seat.Split(",", StringSplitOptions.RemoveEmptyEntries);
+                string SeatNo = string.Join(",", seats);
+                if (bookingTbl.NoOfTickets < capacity)
                 {
-                    if (SeatnoVal(bookingTbl.SeatNo))
+                    if (SeatVal(SeatNo, bookingTbl.NoOfTickets))
                     {
-                        int i = SeatCheck(bookingTbl.SeatNo, bookingTbl.Date, bookingTbl.MovieId);
-                        if (i == 1)
+                        if (SeatnoVal(bookingTbl.SeatNo))
                         {
-                            bookingTbl.SeatNo = SeatNo;
-                            _context.Add(bookingTbl);
-                            await _context.SaveChangesAsync();
-                            return RedirectToAction(nameof(Index));
+                            int i = SeatCheck(bookingTbl.SeatNo, bookingTbl.Date, bookingTbl.MovieId);
+                            if (i == 1)
+                            {
+                                bookingTbl.SeatNo = SeatNo;
+                                _context.Add(bookingTbl);
+                                await _context.SaveChangesAsync();
+                                return RedirectToAction(nameof(Index));
+                            }
+                            else
+                            {
+                            
+                                ViewBag.ErrorMessage = "Already Booked.";
+                                return View();
+                            }
                         }
                         else
                         {
-                            
-                            ViewBag.ErrorMessage = "Already Booked.";
+                            ViewBag.SeatErrorMessage = "Please Enter the Valid SeatNo";
                             return View();
+
                         }
                     }
                     else
                     {
-                        ViewBag.SeatErrorMessage = "Please Enter the Valid SeatNo";
+                        ViewBag.ValidationMesssage = "Selected seats and No of seats mismatching....";
                         return View();
-
                     }
                 }
                 else
                 {
-                    ViewBag.ValidationMesssage = "Selected seats and No of seats mismatching....";
+                    ViewBag.ErrMessage = "Your No of Tickets is greater than that of available tickets\nPlease enter lesser value";
                     return View();
                 }
             }
-            else
+            catch (Exception e)
             {
-                ViewBag.ErrMessage = "Your No of Tickets is greater than that of available tickets\nPlease enter lesser value";
+                //throw new FormatException("Seat No must be number .please correct it.", e);
+                //ViewBag.ErrorMessage = "Seat No must be number .please correct it.";
+                ViewBag.Emessage = "Seat no must be number as per the seating arrangement.Please correct it.";
                 return View();
             }
             return View(bookingTbl);
         }
-
-        // GET: Booking/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.BookingTbl == null)
-            {
-                return NotFound();
-            }
-
-            var bookingTbl = await _context.BookingTbl.FindAsync(id);
-            if (bookingTbl == null)
-            {
-                return NotFound();
-            }
-            ViewData["MovieId"] = new SelectList(_context.MovieTbls, "MovieId", "MovieId", bookingTbl.MovieId);
-            ViewData["UserId"] = new SelectList(_context.UserTbls, "UserId", "UserId", bookingTbl.UserId);
-            return View(bookingTbl);
-        }
-
-        // POST: Booking/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BookingId,MovieId,UserId,NoOfTickets,AmountTotal")] BookingTbl bookingTbl)
-        {
-            if (id != bookingTbl.BookingId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(bookingTbl);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BookingTblExists(bookingTbl.BookingId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["MovieId"] = new SelectList(_context.MovieTbls, "MovieId", "MovieId", bookingTbl.MovieId);
-            ViewData["UserId"] = new SelectList(_context.UserTbls, "UserId", "UserId", bookingTbl.UserId);
-            return View(bookingTbl);
-        }
-
-        // GET: Booking/Delete/5
         public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.BookingTbl == null)
             {
-                return NotFound();
-            }
+                if (id == null || _context.BookingTbl == null)
+                {
+                    return NotFound();
+                }
 
-            var bookingTbl = await _context.BookingTbl
-                .Include(b => b.Movie)
-                .Include(b => b.User)
-                .FirstOrDefaultAsync(m => m.BookingId == id);
-            if (bookingTbl == null)
-            {
-                return NotFound();
-            }
+                var bookingTbl = await _context.BookingTbl
+                    .Include(b => b.Movie)
+                    .Include(b => b.User)
+                    .FirstOrDefaultAsync(m => m.BookingId == id);
+                if (bookingTbl == null)
+                {
+                    return NotFound();
+                }
 
             return View(bookingTbl);
         }

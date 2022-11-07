@@ -18,70 +18,77 @@
 <table class="table">
     @if (ViewBag.UserId != null)
     {
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.MovieName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.MovieDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Slot)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.UserId)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.NoOfTickets)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.SeatNo)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Cost)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                if (item.UserId == ViewBag.UserId)
+        @if(ViewBag.CMessage!=null)
+        {
+            <div class="text-danger">@ViewBag.CMessage</div>
+        }
+        else
+        {
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.MovieName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.MovieDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Slot)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UserId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.NoOfTickets)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.SeatNo)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Cost)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
                 {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.MovieName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.MovieDate)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Slot)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.UserId)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.NoOfTickets)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SeatNo)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Cost)
-                        </td>
-                        <td>
-                            <a asp-action="Details" asp-route-id="@item.OrderDetailId">Cancel Tickets</a>
+                    if (item.UserId == ViewBag.UserId)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MovieName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MovieDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Slot)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NoOfTickets)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SeatNo)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Cost)
+                            </td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@item.OrderDetailId">Cancel Tickets</a>
 
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
                     
-                }
+                    }
                 
-            }
+                }
 
-        </tbody>
+            </tbody>
+        }
     }
     else
     {

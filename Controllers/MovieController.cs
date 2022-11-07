@@ -116,57 +116,6 @@ namespace demo.Controllers
             return View(movieTbl);
         }
 
-        // GET: Movie/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.MovieTbls == null)
-            {
-                return NotFound();
-            }
-
-            var movieTbl = await _context.MovieTbls.FindAsync(id);
-            if (movieTbl == null)
-            {
-                return NotFound();
-            }
-            return View(movieTbl);
-        }
-
-        // POST: Movie/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MovieId,MovieName,Image,Date,Slot,Cost,capacity")] MovieTbl movieTbl)
-        {
-            if (id != movieTbl.MovieId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(movieTbl);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MovieTblExists(movieTbl.MovieId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(movieTbl);
-        }
-
         // GET: Movie/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
