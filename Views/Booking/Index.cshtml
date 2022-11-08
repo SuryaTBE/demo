@@ -32,9 +32,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.AmountTotal)
             </th>
-            <th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.UserId)
-            </th>
+            </th>*@
             <th></th>
         </tr>
     </thead>
@@ -58,12 +58,11 @@
                 @Html.DisplayFor(modelItem => item.AmountTotal)
             </td>
            
-            <td>
+            @*<td>
                 @Html.DisplayFor(modelItem => item.User.UserId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.BookingId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.BookingId">Details</a> |
+            </td>*@
+            <td>@*
+                <a asp-action="Details" asp-route-id="@item.BookingId">Details</a> |*@
                 <a asp-action="Delete" asp-route-id="@item.BookingId">Delete</a>
             </td>
         </tr>

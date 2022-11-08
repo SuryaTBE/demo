@@ -72,10 +72,12 @@ namespace demo.Controllers
 
             var movieTbl = await _context.MovieTbls
                 .FirstOrDefaultAsync(m => m.MovieId == id);
-            //HttpContext.Session.SetString("Moviename",movieTbl.MovieName);
+            string date = movieTbl.Date.ToShortDateString();
+            HttpContext.Session.SetString("Moviename",movieTbl.MovieName);
             HttpContext.Session.SetInt32("MovieId", movieTbl.MovieId);
             HttpContext.Session.SetString("MovieName", movieTbl.MovieName);
             HttpContext.Session.SetInt32("Cost", movieTbl.Cost);
+            HttpContext.Session.SetString("date",date);
             HttpContext.Session.SetString("Date", movieTbl.Date.ToString());
             HttpContext.Session.SetString("Slot",movieTbl.Slot);
             HttpContext.Session.SetInt32("Capacity", movieTbl.capacity);

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using demo.Models;
 
@@ -11,9 +12,10 @@ using demo.Models;
 namespace demo.Migrations
 {
     [DbContext(typeof(SampleContext))]
-    partial class SampleContextModelSnapshot : ModelSnapshot
+    [Migration("20221108083116_migr6")]
+    partial class migr6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,6 +74,7 @@ namespace demo.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("On")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SeatNo")
@@ -79,6 +82,7 @@ namespace demo.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Slot")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("UserId")

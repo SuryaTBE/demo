@@ -1,8 +1,12 @@
 ﻿@model demo.Models.BookingTbl
+@using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
 
 @{
     ViewData["Title"] = "Create";
+    ViewBag.MovieName = @HttpContextAccessor.HttpContext.Session.GetString("MovieName");
+    ViewBag.date = @HttpContextAccessor.HttpContext.Session.GetString("date");
+    ViewBag.Slot = @HttpContextAccessor.HttpContext.Session.GetString("Slot");
     Layout = "UserLayout";
 
 }
@@ -10,7 +14,7 @@
     <link rel="stylesheet" href="~/css/StyleSheet.css">
 </head>*@
 
-<h1>Booking</h1>
+<h1>Ticket Booking</h1>
 
 
 
@@ -34,14 +38,18 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @*<div class="form-group">
-                <label asp-for="MovieId" class="control-label"></label>
-                <select asp-for="MovieId" class ="form-control" asp-items="ViewBag.MovieId"></select>
+            <div class="form-group">
+                <label asp-for="Movie" class="control-label"></label>
+                <input asp-for="Movie" class="form-control" disabled value="@ViewBag.MovieName"/>
             </div>
             <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
-            </div>*@
+                <label asp-for="On" class="control-label"></label>
+                <input asp-for="On" class="form-control" disabled value="@ViewBag.date" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Slot" class="control-label"></label>
+                <input asp-for="Slot" class="form-control" disabled value="@ViewBag.Slot" />
+            </div>
             <div class="form-group">
                 <label asp-for="NoOfTickets" class="control-label"></label>
                 <input asp-for="NoOfTickets" class="form-control" />
@@ -137,7 +145,7 @@
                         <td>12</td>
                         <td>13</td>
                         <td>14</td>
-                        <td>5</td>
+                        <td>15</td>
                     </tr>
                     <tr>
                         <td>16</td>

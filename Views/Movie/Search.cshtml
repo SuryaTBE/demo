@@ -14,10 +14,12 @@
     }
 }
 
-<h1>Search</h1>
+
 <table class="table">
    @if (ViewBag.UserName != null)
    {
+       <h1>Now Showing</h1>
+        <h4>Search Results</h4>
     <thead>
         <tr>
             <th>
@@ -73,6 +75,8 @@
    }
  else
  {
+     
+        <h1>Search</h1>
   <p>
     <a asp-action="Create">Create New</a>
   </p>

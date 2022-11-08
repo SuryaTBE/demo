@@ -110,7 +110,7 @@ namespace demo.Controllers
         }
 
         // GET: Booking/Create
-        public IActionResult Create(int id)
+        public IActionResult Create(int id,BookingTbl booking)
         {
             return View();
         }
@@ -131,7 +131,7 @@ namespace demo.Controllers
                 int capacity = (int)HttpContext.Session.GetInt32("Capacity");
                 int cost = (int)HttpContext.Session.GetInt32("Cost");
                 bookingTbl.AmountTotal = bookingTbl.NoOfTickets * cost;
-                bookingTbl.Date=Convert.ToDateTime(HttpContext.Session.GetString("Date"));
+                bookingTbl.Date = Convert.ToDateTime(HttpContext.Session.GetString("Date"));
                 string Seat = bookingTbl.SeatNo;
                 string[] seats = Seat.Split(",", StringSplitOptions.RemoveEmptyEntries);
                 string SeatNo = string.Join(",", seats);
@@ -174,6 +174,7 @@ namespace demo.Controllers
                     ViewBag.ErrMessage = "Your No of Tickets is greater than that of available tickets\nPlease enter lesser value";
                     return View();
                 }
+                return View(bookingTbl);
             }
             catch (Exception e)
             {
@@ -182,7 +183,7 @@ namespace demo.Controllers
                 ViewBag.Emessage = "Seat no must be number as per the seating arrangement.Please correct it.";
                 return View();
             }
-            return View(bookingTbl);
+            
         }
         public async Task<IActionResult> Delete(int? id)
             {
@@ -230,10 +231,12 @@ public IActionResult Payment(int id)
         [HttpPost]
         public IActionResult Payment(OrderMasterTbl m)
         {
-
+            var UserId = HttpContext.Session.GetInt32("UserId");
+            List<BookingTbl> cart = (from i in _context.BookingTbl where i.UserId == UserId select i).ToList();
+            List<OrderDetails> od = new List<OrderDetails>();
+            OrderMasterTbl om = new OrderMasterTbl();
             if (m.Paid == m.Amount)
             {
-                var UserId = HttpContext.Session.GetInt32("UserId");
                 List<BookingTbl> book = (from i in _context.BookingTbl where i.UserId == UserId select i).ToList();
                 _context.OrderMasterTbls.Update(m);
                 _context.SaveChanges();
@@ -245,6 +248,23 @@ public IActionResult Payment(int id)
                     s.capacity -= j.NoOfTickets;
                     _context.MovieTbls.Update(s);
                 }
+                _context.SaveChanges();
+                foreach (var item in cart)
+                {
+                    OrderDetails detail = new OrderDetails();
+                    detail.MovieId = item.MovieId;
+                    detail.NoOfTickets = item.NoOfTickets;
+                    detail.MovieName = item.MovieName;
+                    detail.UserId = (int)HttpContext.Session.GetInt32("UserId");
+                    string dt = HttpContext.Session.GetString("Date");
+                    detail.MovieDate = Convert.ToDateTime(dt);
+                    detail.Slot = HttpContext.Session.GetString("Slot");
+                    detail.SeatNo = item.SeatNo;
+                    detail.Cost = item.AmountTotal;
+                    detail.OrderMasterId = om.OrderMasterId;
+                    od.Add(detail);
+                }
+                _context.AddRange(od);
                 _context.SaveChanges();
                 _context.BookingTbl.RemoveRange(book);
                 _context.SaveChanges();
@@ -272,7 +292,6 @@ public IActionResult Payment(int id)
                     return RedirectToAction("Index");
                 }
             }
-            List<OrderDetails> od = new List<OrderDetails>();
             OrderMasterTbl om = new OrderMasterTbl();
 
                 om.OrderDate = DateTime.Today;
@@ -287,23 +306,7 @@ public IActionResult Payment(int id)
 
                 _context.SaveChanges();
                 HttpContext.Session.SetInt32("Total", (int)om.Amount);
-                foreach (var item in cart)
-                {
-                    OrderDetails detail = new OrderDetails();
-                    detail.MovieId = item.MovieId;
-                    detail.NoOfTickets = item.NoOfTickets;
-                detail.MovieName = item.MovieName;
-                    detail.UserId = (int)HttpContext.Session.GetInt32("UserId");
-                    string dt= HttpContext.Session.GetString("Date");
-                    detail.MovieDate = Convert.ToDateTime(dt);
-                    detail.Slot = HttpContext.Session.GetString("Slot");
-                    detail.SeatNo = item.SeatNo;
-                    detail.Cost = item.AmountTotal;
-                    detail.OrderMasterId = om.OrderMasterId;
-                    od.Add(detail);
-                }
-                _context.AddRange(od);
-                _context.SaveChanges();
+                
                 
 
                 return RedirectToAction("Payment", new { id = om.OrderMasterId });
