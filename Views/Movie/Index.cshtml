@@ -20,8 +20,9 @@
 <table class="table">
     @if (ViewBag.UserName != null)
     {
+        <body style="background-color:rgb(220, 204, 255);font-family:Garamond, serif;">
         <h1>Search By Date</h1>
-        if(ViewBag.Message!=null)
+        @if(ViewBag.Message!=null)
         {
                 <div class="text-danger">
                     @ViewBag.Message
@@ -36,15 +37,17 @@
             </p>
           </form>
         }
+        </body>
     }
     else
     {
+        <body style="background-color:rgb(214, 245, 214);font-family:Garamond, serif;">
         <h1>Movies Running</h1>
     <p>
-        <a asp-action="Create">Add movie</a>
+                <a class="btn btn-outline-primary" asp-action="Create">Add movie</a>
     </p>
         <h1>Search By Date</h1>
-        if (ViewBag.Message != null)
+        @if (ViewBag.Message != null)
         {
             <div class="text-danger">
                 @ViewBag.Message
@@ -58,8 +61,8 @@
                     <input type="submit" value="Search" />
                 </p>
             </form>
-        <thead>
-            <tr>
+            <thead>
+                <tr>
                     <th>
                         @Html.DisplayNameFor(model => model.MovieId)
                     </th>
@@ -83,8 +86,8 @@
                 </th>
                 <th></th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             @foreach (var item in Model)
             {
                 <tr>
@@ -112,12 +115,13 @@
                     </td>
                     <td>
                        @* <a asp-action="Edit" asp-route-id="@item.MovieId">Edit</a> |*@
-                        <a asp-action="Details" asp-route-id="@item.MovieId">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.MovieId">Delete</a>
+                            <a class="btn btn-outline-primary" asp-action="Details" asp-route-id="@item.MovieId">Details</a> |
+                            <a class="btn btn-outline-primary" asp-action="Delete" asp-route-id="@item.MovieId">Delete</a>
                     </td>
                 </tr>
+             }
+            </tbody>
             }
-        </tbody>
-        }
-    }
+            </body>
+          }
 </table>

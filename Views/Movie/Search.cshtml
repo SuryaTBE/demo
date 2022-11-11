@@ -18,6 +18,7 @@
 <table class="table">
    @if (ViewBag.UserName != null)
    {
+        <body style="background-color:rgb(220, 204, 255);font-family:Garamond, serif;">
        <h1>Now Showing</h1>
         <h4>Search Results</h4>
     <thead>
@@ -66,16 +67,15 @@
                 @Html.DisplayFor(modelItem => item.capacity)
             </td>
             <td>
-                    <a asp-action="BookNow" asp-route-id="@item.MovieId">Book Now</a> |
-                    <a asp-action="Details" asp-route-id="@item.MovieId">Details</a> |
-            </td>
+                        <a class="btn btn-warning" asp-action="BookNow" asp-route-id="@item.MovieId">Book Now</a>
         </tr>
     }
     </tbody>
+        </body>
    }
  else
  {
-     
+        <body style="background-color:rgb(214, 245, 214);font-family:Garamond, serif;">
         <h1>Search</h1>
   <p>
     <a asp-action="Create">Create New</a>
@@ -126,12 +126,13 @@
                 @Html.DisplayFor(modelItem => item.capacity)
             </td>
             <td>
-                        <a asp-action="Details" asp-route-id="@item.MovieId">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.MovieId">Delete</a>
+                        <a class="btn btn-outline-primary" asp-action="Details" asp-route-id="@item.MovieId">Details</a> |
+                        <a class="btn btn-outline-primary" asp-action="Delete" asp-route-id="@item.MovieId">Delete</a>
             </td>
         </tr>
    }
     </tbody>
-
+    </body>
   }
 </table>
+

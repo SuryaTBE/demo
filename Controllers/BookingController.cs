@@ -132,6 +132,8 @@ namespace demo.Controllers
                 int cost = (int)HttpContext.Session.GetInt32("Cost");
                 bookingTbl.AmountTotal = bookingTbl.NoOfTickets * cost;
                 bookingTbl.Date = Convert.ToDateTime(HttpContext.Session.GetString("Date"));
+                bookingTbl.Slot = HttpContext.Session.GetString("Slot");
+                HttpContext.Session.SetString("slot", bookingTbl.Slot);
                 string Seat = bookingTbl.SeatNo;
                 string[] seats = Seat.Split(",", StringSplitOptions.RemoveEmptyEntries);
                 string SeatNo = string.Join(",", seats);
@@ -234,7 +236,6 @@ public IActionResult Payment(int id)
             var UserId = HttpContext.Session.GetInt32("UserId");
             List<BookingTbl> cart = (from i in _context.BookingTbl where i.UserId == UserId select i).ToList();
             List<OrderDetails> od = new List<OrderDetails>();
-            OrderMasterTbl om = new OrderMasterTbl();
             if (m.Paid == m.Amount)
             {
                 List<BookingTbl> book = (from i in _context.BookingTbl where i.UserId == UserId select i).ToList();
@@ -258,10 +259,10 @@ public IActionResult Payment(int id)
                     detail.UserId = (int)HttpContext.Session.GetInt32("UserId");
                     string dt = HttpContext.Session.GetString("Date");
                     detail.MovieDate = Convert.ToDateTime(dt);
-                    detail.Slot = HttpContext.Session.GetString("Slot");
+                    detail.Slot = HttpContext.Session.GetString("slot");
                     detail.SeatNo = item.SeatNo;
                     detail.Cost = item.AmountTotal;
-                    detail.OrderMasterId = om.OrderMasterId;
+                    detail.OrderMasterId = m.OrderMasterId;
                     od.Add(detail);
                 }
                 _context.AddRange(od);

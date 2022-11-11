@@ -13,7 +13,7 @@ namespace demo.Models
         public int OrderMasterId { get; set; }
         [DataType(DataType.Date)]
         public DateTime MovieDate { get; set; }
-        public string Slot { get; set; }
+        public string? Slot { get; set; }
         public int NoOfTickets { get; set; }
         public string SeatNo { get; set; }
         public int Cost { get; set; }

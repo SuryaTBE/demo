@@ -18,6 +18,7 @@
 <table class="table">
     @if (ViewBag.UserId != null)
     {
+        <body style="background-color:rgb(220, 204, 255);font-family:Garamond, serif;">
         @if(ViewBag.CMessage!=null)
         {
             <div class="text-danger">@ViewBag.CMessage</div>
@@ -72,7 +73,7 @@
                                 @Html.DisplayFor(modelItem => item.Cost)
                             </td>
                             <td>
-                                <a asp-action="Details" asp-route-id="@item.OrderDetailId">Cancel Tickets</a>
+                                <a class="btn btn-warning" asp-action="Details" asp-route-id="@item.OrderDetailId">Cancel Tickets</a>
 
                             </td>
                         </tr>
@@ -83,9 +84,11 @@
 
             </tbody>
         }
+        </body>
     }
     else
     {
+         <body style="background-color:rgb(214, 245, 214)">
         <thead>
             <tr>
 
@@ -155,5 +158,6 @@
             }
 
         </tbody>
+        </body>
     }
 </table>

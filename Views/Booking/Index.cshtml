@@ -6,7 +6,7 @@
     Layout = "UserLayout";
     ViewBag.msg = @HttpContextAccesor.HttpContext.Session.GetString("msg");
 }
-
+<body style="background-color:rgb(220, 204, 255);font-family:Garamond, serif;">
 <h1>Cart</h1>
   @if (ViewBag.msg != null)
     {
@@ -22,6 +22,9 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Slot)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.NoOfTickets)
@@ -42,12 +45,15 @@
 @foreach (var item in Model) 
 {
         <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Movie.MovieName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Date)
-                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Movie.MovieName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Slot)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.NoOfTickets)
             </td>
@@ -63,7 +69,7 @@
             </td>*@
             <td>@*
                 <a asp-action="Details" asp-route-id="@item.BookingId">Details</a> |*@
-                <a asp-action="Delete" asp-route-id="@item.BookingId">Delete</a>
+                        <a class="btn btn-warning" asp-action="Delete" asp-route-id="@item.BookingId">Delete</a>
             </td>
         </tr>
 }
@@ -78,7 +84,7 @@
         {
         <form asp-controller="Booking" asp-action="ProceedtoBuy">
            <div class="form-group">
-              <input type="submit" value="BOOK" class="btn btn-primary" />
+                    <input type="submit" value="BOOK" class="btn btn-warning" />
            </div>
         </form>
          }
@@ -87,3 +93,4 @@
 
     
 </table>
+</body>
